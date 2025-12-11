@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Durchstöbere die besten und lustigsten Sprüche von Lehrern." />
+    <title>Lehrerzitate – Die besten Lehrerzitate</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+
+    <!-- CSS einbinden -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <!-- Header wird durch loader.js geladen -->
+
+    <main class="main-content">
+        <!-- For You Tab -->
+        <div class="tab-content active" id="for-you-tab">
+            <div class="for-you-container">
+                <div id="quotes-container" class="quotes-container">
+                    <p class="loading">Lade Zitate...</p>
+                </div>
+                <div id="no-quotes-message" class="no-quotes-message" style="display: none;">
+                    <p>Keine Zitate gefunden.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Tab -->
+        <div class="tab-content" id="search-tab">
+            <div class="search-container">
+                <div class="search-header">
+                    <h2>Zitate durchsuchen</h2>
+                    <p>Suche nach Lehrern oder Schlagwörtern</p>
+                </div>
+
+                <div class="search-filters">
+                    <div class="search-box-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input 
+                            type="text" 
+                            id="search-input" 
+                            class="search-input" 
+                            placeholder="Lehrer, Fach oder Zitat..."
+                        >
+                    </div>
+
+                    <div class="sort-wrapper">
+                        <label for="sort-select">Sortieren:</label>
+                        <select id="sort-select" class="sort-select">
+                            <option value="newest">Neueste zuerst</option>
+                            <option value="popular">Beliebte zuerst</option>
+                            <option value="oldest">Älteste zuerst</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="search-results-container" class="quotes-container">
+                    <p class="placeholder-text">Starten Sie eine Suche, um Ergebnisse anzuzeigen</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Tab -->
+        <div class="tab-content" id="submit-tab">
+            <div class="submit-page-container">
+                <div class="submit-header">
+                    <h2>Neues Zitat einreichen</h2>
+                    <p>Teile dein Lieblingszitat mit der Community</p>
+                </div>
+
+                <form id="submit-form" class="submit-form">
+                    <div class="form-group">
+                        <label for="quote-text">Das Zitat *</label>
+                        <textarea
+                            id="quote-text"
+                            name="quote-text"
+                            class="form-input"
+                            placeholder="Gib den Spruch des Lehrers ein..."
+                            required
+                            minlength="10"
+                            maxlength="500"
+                        ></textarea>
+                        <small class="char-count"><span id="char-count">0</span>/500</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="teacher-name">Name des Lehrers *</label>
+                        <input
+                            type="text"
+                            id="teacher-name"
+                            name="teacher-name"
+                            class="form-input"
+                            placeholder="z.B. Herr Müller, Frau Schmidt"
+                            required
+                            minlength="2"
+                            maxlength="100"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Fach (optional)</label>
+                        <input
+                            type="text"
+                            id="subject"
+                            name="subject"
+                            class="form-input"
+                            placeholder="z.B. Mathematik, Deutsch, Sport"
+                            maxlength="50"
+                        />
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Zitat einreichen
+                    </button>
+
+                    <div id="success-message" class="message success-message" style="display: none;">
+                        <i class="fas fa-check-circle"></i>
+                        <p>Danke für dein Zitat! Es wird bald angezeigt.</p>
+                    </div>
+
+                    <div id="error-message" class="message error-message" style="display: none;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p id="error-text"></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Info Tab -->
+        <div class="tab-content" id="info-tab">
+            <div class="info-page-container">
+                <div class="info-section">
+                    <h2>📋 Information</h2>
+                    <p>Lehrerzitate ist eine Community-Plattform für die lustigsten und merkwürdigsten Sprüche von Lehrern.</p>
+                    
+                    <div class="info-box">
+                        <i class="fas fa-lightbulb"></i>
+                        <div>
+                            <h4>Was ist Lehrerzitate?</h4>
+                            <p>Eine Sammlung der besten und lustigsten Sprüche von Lehrern. Teile deine Lieblingszitate mit der Community und entdecke neue!</p>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <h4>Community-basiert</h4>
+                            <p>Jeder kann Zitate einreichen und über seine Favoriten abstimmen. Je mehr Upvotes, desto höher wird das Zitat in der Rangliste.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fas fa-search"></i>
+                        <div>
+                            <h4>Schnelle Suche</h4>
+                            <p>Suche nach Lehrern, Fächern oder bestimmten Zitaten. Mit verschiedenen Sortierungsoptionen findest du schnell, was du suchst.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div class="tab-content" id="settings-tab">
+            <div class="settings-page-container">
+                <div class="settings-section">
+                    <h2>⚙️ Einstellungen</h2>
+                    
+                    <!-- Dark Mode Setting -->
+                    <div class="settings-group">
+                        <h3>Erscheinungsbild</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <label for="dark-mode-toggle">Dunkler Modus</label>
+                                <p class="setting-description">Aktiviere den dunklen Modus für eine angenehme Leseerfahrung bei schlechten Lichtverhältnissen.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="dark-mode-toggle" name="dark-mode">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <!-- Accent Color Setting -->
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <label>Akzentfarbe</label>
+                                <p class="setting-description">Wähle deine bevorzugte Akzentfarbe für die Benutzeroberfläche.</p>
+                            </div>
+                            <div class="color-picker">
+                                <label class="color-option">
+                                    <input type="radio" name="accent-color" value="#4a69bd" checked>
+                                    <span class="color-preview" style="background-color: #4a69bd;"></span>
+                                    <span class="color-name">Blau</span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="accent-color" value="#e74c3c">
+                                    <span class="color-preview" style="background-color: #e74c3c;"></span>
+                                    <span class="color-name">Rot</span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="accent-color" value="#2ecc71">
+                                    <span class="color-preview" style="background-color: #2ecc71;"></span>
+                                    <span class="color-name">Grün</span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="accent-color" value="#f39c12">
+                                    <span class="color-preview" style="background-color: #f39c12;"></span>
+                                    <span class="color-name">Orange</span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="accent-color" value="#9b59b6">
+                                    <span class="color-preview" style="background-color: #9b59b6;"></span>
+                                    <span class="color-name">Lila</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reset Button -->
+                    <div class="settings-group">
+                        <button class="reset-btn">
+                            <i class="fas fa-redo"></i>
+                            Einstellungen zurücksetzen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Tab -->
+        <div class="tab-content" id="about-tab">
+            <div class="about-page-container">
+                <div class="about-section">
+                    <h2>❤️ Über uns</h2>
+                    <p class="about-intro">Lehrerzitate wurde mit ❤️ entwickelt.</p>
+                    
+                    <div class="about-content">
+                        <h3>Unsere Mission</h3>
+                        <p>Wir möchten die lustigsten, merkwürdigsten und inspirierendsten Sprüche von Lehrern sammeln und mit der Welt teilen. Lehrerzitate ist eine Plattform, die Schüler, Lehrer und alle Interessierten zusammenbringt.</p>
+
+                        <h3>Warum Lehrerzitate?</h3>
+                        <p>Jeder von uns hat unvergessliche Zitate von seinen Lehrern gehört. Einige sind lustig, einige inspirierend, und manche bleiben einfach im Gedächtnis. Mit dieser Plattform möchten wir diese Momente festhalten und mit anderen teilen.</p>
+
+                        <h3>Technologie</h3>
+                        <p>Lehrerzitate wurde mit moderner Webtechnologie entwickelt, um eine schnelle und responsive Benutzeroberfläche zu bieten. Die Plattform ist vollständig kostenlos und wird von einer enthusiastischen Community gepflegt.</p>
+
+                        <div class="about-cta">
+                            <p>Hast du ein lustiges Zitat, das du teilen möchtest?</p>
+                            <p style="margin-top: 10px; opacity: 0.8;">Nutze die "Einreichen"-Funktion, um dein Lieblingszitat hinzuzufügen!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer wird durch loader.js geladen -->
+
+    <!-- JavaScript -->
+    <script src="../js/loader.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/submit.js"></script>
+</body>
+
+</html>

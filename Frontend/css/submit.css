@@ -1,0 +1,217 @@
+/* ============================================
+   SUBMIT PAGE SPECIFIC STYLES
+   ============================================ */
+
+.submit-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+}
+
+.submit-container h2 {
+    font-size: 2rem;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+}
+
+.submit-intro {
+    font-size: 1.05rem;
+    color: var(--text-light);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* ============================================
+   FORM STYLES
+   ============================================ */
+
+.submit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.form-input {
+    padding: 12px 16px;
+    font-size: 1rem;
+    border: 2px solid var(--border-light);
+    border-radius: var(--border-radius);
+    background-color: white;
+    color: var(--text-dark);
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+textarea.form-input {
+    resize: vertical;
+    min-height: 120px;
+    max-height: 300px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 105, 189, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--text-light);
+}
+
+.form-help {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 4px;
+}
+
+.form-required {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-top: 8px;
+}
+
+/* ============================================
+   SUBMIT BUTTON
+   ============================================ */
+
+.submit-btn {
+    padding: 14px 32px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ============================================
+   SUCCESS & ERROR MESSAGES
+   ============================================ */
+
+.success-message {
+    padding: 16px;
+    background-color: rgba(39, 174, 96, 0.1);
+    border-left: 4px solid var(--success-color);
+    border-radius: var(--border-radius);
+    color: var(--success-color);
+    font-weight: 500;
+    animation: slideIn 0.3s ease;
+}
+
+.error-message {
+    padding: 16px;
+    background-color: rgba(231, 76, 60, 0.1);
+    border-left: 4px solid var(--accent-color);
+    border-radius: var(--border-radius);
+    color: var(--accent-color);
+    font-weight: 500;
+    animation: slideIn 0.3s ease;
+}
+
+.success-message p,
+.error-message p {
+    margin: 0;
+}
+
+/* ============================================
+   BACK LINK
+   ============================================ */
+
+.back-link {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.back-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.back-link a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .submit-container {
+        padding: 24px;
+    }
+
+    .submit-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .submit-intro {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .submit-container {
+        padding: 16px;
+    }
+
+    .submit-container h2 {
+        font-size: 1.3rem;
+    }
+
+    .submit-btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}

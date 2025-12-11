@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Reiche dein bestes Lehrerzitat ein!" />
+    <title>Zitat einreichen – Lehrerzitate</title>
+
+    <!-- CSS einbinden -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/submit.css">
+</head>
+
+<body>
+    <!-- Header mit Navigation -->
+    <header class="header">
+        <div class="header-content">
+            <h1>Lehrerzitate</h1>
+            <p class="subtitle">Die besten (und schlimmsten) Sprüche unserer Lehrer</p>
+        </div>
+        <nav class="nav">
+            <a href="index.html" class="nav-link">Durchstöbern</a>
+            <a href="submit.html" class="nav-link active">Zitat einreichen</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="submit-container">
+            <h2>Teile dein Lieblingszitat!</h2>
+            <p class="submit-intro">Hast du einen lustigen oder inspirierenden Spruch von deinem Lehrer gehört? Teile ihn mit uns!</p>
+
+            <form id="submit-form" class="submit-form">
+                <!-- Textbereich für das Zitat -->
+                <div class="form-group">
+                    <label for="quote-text">Das Zitat *</label>
+                    <textarea
+                        id="quote-text"
+                        name="quote-text"
+                        class="form-input"
+                        placeholder="Gib den Spruch des Lehrers ein..."
+                        required
+                        minlength="10"
+                        maxlength="500"
+                    ></textarea>
+                    <small class="form-help">Max. 500 Zeichen</small>
+                </div>
+
+                <!-- Eingabe für Lehrername -->
+                <div class="form-group">
+                    <label for="teacher-name">Name des Lehrers *</label>
+                    <input
+                        type="text"
+                        id="teacher-name"
+                        name="teacher-name"
+                        class="form-input"
+                        placeholder="z.B. Herr Müller, Frau Schmidt"
+                        required
+                        minlength="2"
+                        maxlength="100"
+                    />
+                </div>
+
+                <!-- Optionale Fächereingabe -->
+                <div class="form-group">
+                    <label for="subject">Fach (optional)</label>
+                    <input
+                        type="text"
+                        id="subject"
+                        name="subject"
+                        class="form-input"
+                        placeholder="z.B. Mathematik, Deutsch, Sport"
+                        maxlength="50"
+                    />
+                </div>
+
+                <!-- Erforderliche Felder Hinweis -->
+                <p class="form-required">* Erforderliche Felder</p>
+
+                <!-- Absende-Button -->
+                <button type="submit" class="submit-btn">Zitat einreichen</button>
+
+                <!-- Erfolgsmeldung (versteckt bis zum Submit) -->
+                <div id="success-message" class="success-message" style="display: none;">
+                    <p>✓ Danke für dein Zitat! Es wird bald angezeigt.</p>
+                </div>
+
+                <!-- Fehlermeldung (versteckt) -->
+                <div id="error-message" class="error-message" style="display: none;">
+                    <p id="error-text"></p>
+                </div>
+            </form>
+
+            <!-- Link zurück -->
+            <div class="back-link">
+                <a href="index.html">← Zurück zum Durchstöbern</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Lehrerzitate. Gebaut mit Liebe für Schüler.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../js/submit.js"></script>
+</body>
+
+</html>

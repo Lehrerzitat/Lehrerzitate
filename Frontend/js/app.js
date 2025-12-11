@@ -1,0 +1,738 @@
+/**
+ * LEHRERZITATE - Main Application
+ * Professional Quote Browser with Tab Navigation
+ */
+
+// ============================================
+// API CONFIGURATION
+// ============================================
+
+const API_BASE_URL = localStorage.getItem('apiUrl') || 'http://localhost:3000/api';
+
+// Generiere oder hole User-ID für Vote-Tracking
+function getUserId() {
+  let userId = localStorage.getItem('userId');
+  if (!userId) {
+    userId = 'user_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('userId', userId);
+  }
+  return userId;
+}
+
+const CURRENT_USER_ID = getUserId();
+
+// ============================================
+// DUMMY DATA
+// ============================================
+
+const dummyQuotes = [
+    {
+        id: 1,
+        text: "Wenn ihr nicht schweigen könnt, müsst ihr mindestens leise sein!",
+        teacher: "Herr Müller",
+        subject: "Mathematik",
+        upvotes: 342,
+        downvotes: 15,
+        date: "2025-01-10",
+        userVote: null,
+    },
+    {
+        id: 2,
+        text: "Das ist kein Kindergarten, das ist eine Schule!",
+        teacher: "Frau Schmidt",
+        subject: "Deutsch",
+        upvotes: 456,
+        downvotes: 8,
+        date: "2025-01-09",
+        userVote: null,
+    },
+    {
+        id: 3,
+        text: "Ich habe euch 20 Minuten Zeit gegeben, und ihr seid noch nicht mal fertig mit lesen!",
+        teacher: "Herr Weber",
+        subject: "Geschichte",
+        upvotes: 289,
+        downvotes: 12,
+        date: "2025-01-08",
+        userVote: null,
+    },
+    {
+        id: 4,
+        text: "Das ist die letzte Chance, sonst gibt es Hausaufgaben!",
+        teacher: "Frau Müller",
+        subject: "Englisch",
+        upvotes: 512,
+        downvotes: 22,
+        date: "2025-01-07",
+        userVote: null,
+    },
+    {
+        id: 5,
+        text: "Wenn ich euch nochmal erwische, rufe ich eure Eltern an!",
+        teacher: "Herr Fischer",
+        subject: "Biologie",
+        upvotes: 378,
+        downvotes: 18,
+        date: "2025-01-06",
+        userVote: null,
+    },
+    {
+        id: 6,
+        text: "Das wird die wichtigste Stunde dieses Schuljahres!",
+        teacher: "Frau Kaufmann",
+        subject: "Chemie",
+        upvotes: 421,
+        downvotes: 25,
+        date: "2025-01-05",
+        userVote: null,
+    },
+    {
+        id: 7,
+        text: "Mathematik ist wie Atmen – man kann nicht ohne atmen!",
+        teacher: "Herr Müller",
+        subject: "Mathematik",
+        upvotes: 198,
+        downvotes: 45,
+        date: "2025-01-04",
+        userVote: null,
+    },
+    {
+        id: 8,
+        text: "Das hätte jeder von euch wissen müssen!",
+        teacher: "Frau Wagner",
+        subject: "Physik",
+        upvotes: 267,
+        downvotes: 31,
+        date: "2025-01-03",
+        userVote: null,
+    },
+    {
+        id: 9,
+        text: "Im Winter fahren wir nicht ins Freibad!",
+        teacher: "Herr Winter",
+        subject: "Sport",
+        upvotes: 423,
+        downvotes: 12,
+        date: "2025-01-02",
+        userVote: null,
+    },
+    {
+        id: 10,
+        text: "Bitte konzentriert euch auf die Aufgabe!",
+        teacher: "Frau Bauer",
+        subject: "Kunst",
+        upvotes: 234,
+        downvotes: 5,
+        date: "2025-01-01",
+        userVote: null,
+    },
+    {
+        id: 11,
+        text: "Das ist keine Pizza-Pause, das ist Unterricht!",
+        teacher: "Herr Schneider",
+        subject: "Musik",
+        upvotes: 567,
+        downvotes: 19,
+        date: "2024-12-31",
+        userVote: null,
+    },
+    {
+        id: 12,
+        text: "Wer das nicht versteht, sollte zuhören!",
+        teacher: "Frau Hoffmann",
+        subject: "Deutsch",
+        upvotes: 312,
+        downvotes: 14,
+        date: "2024-12-30",
+        userVote: null,
+    },
+];
+
+// ============================================
+// STATE MANAGEMENT
+// ============================================
+
+let allQuotes = [];
+let filteredQuotes = [];
+let currentSortMode = "newest";
+let currentSearchQuery = "";
+let currentTab = "for-you";
+let currentTheme = localStorage.getItem("theme") || "light";
+let currentAccentColor = localStorage.getItem("accentColor") || "#4a69bd";
+let isLoadingQuotes = false;
+
+// ============================================
+// INITIALIZATION
+// ============================================
+
+function initApp() {
+    loadQuotes();
+    setupEventListeners();
+    applyAccentColor(currentAccentColor);
+    renderForYouPage();
+    console.log("✓ App initialized");
+}
+
+function setupEventListeners() {
+    // Tab Navigation - Desktop
+    const navLinksDesktop = document.querySelectorAll(".nav-link-desktop[data-tab]");
+    navLinksDesktop.forEach(link => {
+        link.addEventListener("click", handleTabChange);
+    });
+
+    // Tab Navigation - Mobile
+    const navLinksMobile = document.querySelectorAll(".nav-link-mobile[data-tab]");
+    navLinksMobile.forEach(link => {
+        link.addEventListener("click", handleTabChange);
+    });
+
+    // Desktop More Menu
+    setupDesktopMoreMenu();
+
+    // Mobile More Menu
+    setupMobileMoreMenu();
+
+    // Search and sort
+    const searchInput = document.getElementById("search-input");
+    const sortSelect = document.getElementById("sort-select");
+    const quotesContainer = document.getElementById("quotes-container");
+    const searchResultsContainer = document.getElementById("search-results-container");
+    const quoteTextInput = document.getElementById("quote-text");
+
+    if (searchInput) searchInput.addEventListener("input", handleSearch);
+    if (sortSelect) sortSelect.addEventListener("change", handleSort);
+    if (quotesContainer) quotesContainer.addEventListener("click", handleVoteButtonClick);
+    if (searchResultsContainer) searchResultsContainer.addEventListener("click", handleVoteButtonClick);
+    if (quoteTextInput) quoteTextInput.addEventListener("input", updateCharCount);
+
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener("change", handleDarkModeToggle);
+        // Set initial state
+        darkModeToggle.checked = currentTheme === "dark";
+    }
+
+    // Initialize theme
+    applyTheme(currentTheme);
+}
+
+function setupDesktopMoreMenu() {
+    const moreBtn = document.querySelector("[data-toggle='more-menu']");
+    const moreMenu = document.getElementById("more-menu");
+    const dropdownItems = document.querySelectorAll(".dropdown-item");
+
+    if (!moreBtn || !moreMenu) return;
+
+    moreBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        moreMenu.classList.toggle("active");
+        moreBtn.classList.toggle("active");
+    });
+
+    dropdownItems.forEach(item => {
+        item.addEventListener("click", (e) => {
+            e.preventDefault();
+            handlePageNavigation(item.getAttribute("data-page"));
+            moreMenu.classList.remove("active");
+            moreBtn.classList.remove("active");
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener("click", (e) => {
+        if (!e.target.closest(".nav-more-desktop")) {
+            moreMenu.classList.remove("active");
+            moreBtn.classList.remove("active");
+        }
+    });
+}
+
+function setupMobileMoreMenu() {
+    const moreBtnMobile = document.querySelector("[data-toggle='more-menu-mobile']");
+    const moreMenuMobile = document.getElementById("more-menu-mobile");
+    const dropdownItemsMobile = document.querySelectorAll(".dropdown-item-mobile");
+
+    if (!moreBtnMobile || !moreMenuMobile) return;
+
+    moreBtnMobile.addEventListener("click", (e) => {
+        e.preventDefault();
+        moreMenuMobile.classList.toggle("active");
+        moreBtnMobile.classList.toggle("active");
+    });
+
+    dropdownItemsMobile.forEach(item => {
+        item.addEventListener("click", (e) => {
+            e.preventDefault();
+            handlePageNavigation(item.getAttribute("data-page"));
+            moreMenuMobile.classList.remove("active");
+            moreBtnMobile.classList.remove("active");
+        });
+    });
+}
+
+// ============================================
+// TAB NAVIGATION
+// ============================================
+
+function handleTabChange(event) {
+    event.preventDefault();
+    const tabName = event.currentTarget.getAttribute("data-tab");
+    switchTab(tabName);
+}
+
+function switchTab(tabName) {
+    const tabContents = document.querySelectorAll(".tab-content");
+    const navLinksDesktop = document.querySelectorAll(".nav-link-desktop[data-tab]");
+    const navLinksMobile = document.querySelectorAll(".nav-link-mobile[data-tab]");
+
+    // Hide all tabs
+    tabContents.forEach(tab => tab.classList.remove("active"));
+
+    // Show active tab
+    const activeTab = document.getElementById(tabName + "-tab");
+    if (activeTab) {
+        activeTab.classList.add("active");
+    }
+
+    // Update navigation state (desktop)
+    navLinksDesktop.forEach(link => {
+        if (link.getAttribute("data-tab") === tabName) {
+            link.classList.add("active");
+        } else {
+            link.classList.remove("active");
+        }
+    });
+
+    // Update navigation state (mobile)
+    navLinksMobile.forEach(link => {
+        if (link.getAttribute("data-tab") === tabName) {
+            link.classList.add("active");
+        } else {
+            link.classList.remove("active");
+        }
+    });
+
+    currentTab = tabName;
+
+    // Load tab-specific content
+    if (tabName === "for-you") {
+        renderForYouPage();
+    }
+
+    console.log(`Switched to ${tabName} tab`);
+}
+
+// ============================================
+// PAGE NAVIGATION (Info, Settings, About)
+// ============================================
+
+function handlePageNavigation(pageName) {
+    console.log(`Navigating to ${pageName} page`);
+    
+    switch(pageName) {
+        case "info":
+            switchToPage("info");
+            break;
+        case "settings":
+            switchToPage("settings");
+            break;
+        case "about":
+            switchToPage("about");
+            break;
+    }
+}
+
+function switchToPage(pageName) {
+    const tabContents = document.querySelectorAll(".tab-content");
+    
+    // Hide all tabs
+    tabContents.forEach(tab => tab.classList.remove("active"));
+
+    // Show active page
+    const activePage = document.getElementById(pageName + "-tab");
+    if (activePage) {
+        activePage.classList.add("active");
+    }
+
+    currentTab = pageName;
+
+    // Load page-specific content
+    if (pageName === "settings") {
+        initSettingsPage();
+    }
+
+    console.log(`Switched to ${pageName} page`);
+}
+
+// ============================================
+// FOR YOU PAGE - QUOTE FEED
+// ============================================
+
+function renderForYouPage() {
+    loadQuotes().then(() => {
+        filteredQuotes = [...allQuotes];
+        sortQuotes(filteredQuotes, "newest");
+        renderQuotes();
+    });
+}
+
+async function loadQuotes() {
+    if (isLoadingQuotes) return;
+    
+    try {
+        isLoadingQuotes = true;
+        const quotesContainer = document.getElementById("quotes-container");
+        if (quotesContainer) {
+            quotesContainer.innerHTML = '<p class="loading">Lade Zitate...</p>';
+        }
+
+        const response = await fetch(`${API_BASE_URL}/quotes?sort=newest`);
+        
+        if (!response.ok) {
+            throw new Error(`API-Fehler: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.success && Array.isArray(data.data)) {
+            allQuotes = data.data.map(quote => ({
+                ...quote,
+                userVote: null
+            }));
+            console.log(`✅ ${allQuotes.length} Zitate geladen`);
+        } else {
+            throw new Error('Ungültige API-Response');
+        }
+
+        // Nutzer-Votes laden
+        await loadUserVotes();
+        
+    } catch (error) {
+        console.error('Fehler beim Laden der Zitate:', error);
+        const quotesContainer = document.getElementById("quotes-container");
+        if (quotesContainer) {
+            quotesContainer.innerHTML = '<p class="error-message">Fehler beim Laden der Zitate. Bitte versuchen Sie es später erneut.</p>';
+        }
+    } finally {
+        isLoadingQuotes = false;
+    }
+}
+
+async function loadUserVotes() {
+    // Diese Funktion könnte später implementiert werden, um User-Votes vom Server zu laden
+    // Für jetzt speichern wir sie lokal
+    const userVotes = JSON.parse(localStorage.getItem('userVotes') || '{}');
+    
+    allQuotes.forEach(quote => {
+        const voteKey = `quote_${quote.id}`;
+        if (userVotes[voteKey]) {
+            quote.userVote = userVotes[voteKey];
+        }
+    });
+}
+
+function renderQuotes() {
+    const quotesContainer = document.getElementById("quotes-container");
+    const searchResultsContainer = document.getElementById("search-results-container");
+    const noQuotesMessage = document.getElementById("no-quotes-message");
+    
+    const container = currentTab === "search" ? searchResultsContainer : quotesContainer;
+
+    if (filteredQuotes.length === 0) {
+        if (quotesContainer) quotesContainer.innerHTML = "";
+        if (noQuotesMessage) noQuotesMessage.style.display = "block";
+        return;
+    }
+
+    if (noQuotesMessage) noQuotesMessage.style.display = "none";
+    container.innerHTML = filteredQuotes
+        .map((quote) => createQuoteCard(quote))
+        .join("");
+}
+
+function createQuoteCard(quote) {
+    const upvoteClass = quote.userVote === "up" ? "active" : "";
+    const downvoteClass = quote.userVote === "down" ? "active" : "";
+
+    return `
+        <div class="quote" data-quote-id="${quote.id}">
+            <div class="text">${escapeHtml(quote.text)}</div>
+            
+            <div class="meta">
+                ${escapeHtml(quote.teacher)}
+                ${
+                    quote.subject
+                        ? `<span class="quote-subject">${escapeHtml(quote.subject)}</span>`
+                        : ""
+                }
+            </div>
+
+            <div class="quote-actions">
+                <button class="vote-button upvote ${upvoteClass}" data-vote="up" data-quote-id="${quote.id}">
+                    👍 <span class="vote-count">${quote.upvotes}</span>
+                </button>
+                <button class="vote-button downvote ${downvoteClass}" data-vote="down" data-quote-id="${quote.id}">
+                    👎 <span class="vote-count">${quote.downvotes}</span>
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// ============================================
+// SEARCH & FILTER
+// ============================================
+
+function handleSearch(event) {
+    currentSearchQuery = event.target.value.toLowerCase();
+    
+    // Nur im Search-Tab filtern
+    if (currentTab === "search") {
+        applyFiltersAndSort();
+    }
+}
+
+function handleSort(event) {
+    currentSortMode = event.target.value;
+    
+    // Nur im Search-Tab sortieren
+    if (currentTab === "search") {
+        applyFiltersAndSort();
+    }
+}
+
+function applyFiltersAndSort() {
+    filteredQuotes = [...allQuotes];
+
+    // Nur Suchfilter im Search-Tab anwenden
+    if (currentTab === "search" && currentSearchQuery) {
+        filteredQuotes = filteredQuotes.filter((quote) => {
+            const text = quote.text.toLowerCase();
+            const teacher = quote.teacher.toLowerCase();
+            const subject = quote.subject ? quote.subject.toLowerCase() : "";
+
+            // Suche nach ganzen Wörtern, nicht nach Teilstrings
+            const searchWords = currentSearchQuery.trim().split(/\s+/);
+            
+            return searchWords.some(word => {
+                // Exakte Übereinstimmung für Teacher und Subject
+                if (teacher === word || subject === word) {
+                    return true;
+                }
+                
+                // Für den Textinhalt: Nach ganzen Wörtern suchen
+                const wordBoundaryRegex = new RegExp(`\\b${escapeRegex(word)}\\b`, 'gi');
+                return wordBoundaryRegex.test(text);
+            });
+        });
+    }
+
+    sortQuotes(filteredQuotes, currentSortMode);
+    renderQuotes();
+}
+
+function escapeRegex(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function sortQuotes(quotes, mode) {
+    switch (mode) {
+        case "popular":
+            quotes.sort((a, b) => {
+                const aScore = a.upvotes - a.downvotes;
+                const bScore = b.upvotes - b.downvotes;
+                return bScore - aScore;
+            });
+            break;
+
+        case "oldest":
+            quotes.sort(
+                (a, b) => new Date(a.date) - new Date(b.date)
+            );
+            break;
+
+        case "newest":
+        default:
+            quotes.sort(
+                (a, b) => new Date(b.date) - new Date(a.date)
+            );
+            break;
+    }
+}
+
+// ============================================
+// VOTING
+// ============================================
+
+function handleVoteButtonClick(event) {
+    const button = event.target.closest(".vote-button");
+    if (!button) return;
+
+    const quoteId = parseInt(button.dataset.quoteId);
+    const voteType = button.dataset.vote;
+
+    toggleVote(quoteId, voteType);
+}
+
+function toggleVote(quoteId, voteType) {
+    const quote = allQuotes.find((q) => q.id === quoteId);
+    if (!quote) return;
+
+    console.log(`Vote toggled on quote ${quoteId}: ${voteType}`);
+
+    if (quote.userVote === voteType) {
+        if (voteType === "up") {
+            quote.upvotes = Math.max(0, quote.upvotes - 1);
+        } else {
+            quote.downvotes = Math.max(0, quote.downvotes - 1);
+        }
+        quote.userVote = null;
+    } else {
+        if (quote.userVote === "up") {
+            quote.upvotes = Math.max(0, quote.upvotes - 1);
+        } else if (quote.userVote === "down") {
+            quote.downvotes = Math.max(0, quote.downvotes - 1);
+        }
+
+        if (voteType === "up") {
+            quote.upvotes++;
+        } else {
+            quote.downvotes++;
+        }
+        quote.userVote = voteType;
+    }
+
+    const filteredQuote = filteredQuotes.find((q) => q.id === quoteId);
+    if (filteredQuote) {
+        Object.assign(filteredQuote, quote);
+    }
+
+    renderQuotes();
+}
+
+// ============================================
+// FORM HELPERS
+// ============================================
+
+function updateCharCount() {
+    const charCountSpan = document.getElementById("char-count");
+    const quoteTextInput = document.getElementById("quote-text");
+    if (charCountSpan && quoteTextInput) {
+        const charCount = quoteTextInput.value.length;
+        charCountSpan.textContent = charCount;
+    }
+}
+
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+
+function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ============================================
+// THEME & SETTINGS
+// ============================================
+
+function handleDarkModeToggle(event) {
+    const isDarkMode = event.target.checked;
+    currentTheme = isDarkMode ? "dark" : "light";
+    localStorage.setItem("theme", currentTheme);
+    applyTheme(currentTheme);
+}
+
+function applyTheme(theme) {
+    if (theme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+        document.documentElement.removeAttribute("data-theme");
+    }
+}
+
+function initSettingsPage() {
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
+    if (darkModeToggle) {
+        darkModeToggle.checked = currentTheme === "dark";
+    }
+
+    // Initialize color picker if it exists
+    const colorOptions = document.querySelectorAll(".color-option input[type='radio']");
+    colorOptions.forEach(option => {
+        option.addEventListener("change", handleAccentColorChange);
+        // Set the checked state based on current color
+        if (option.value === currentAccentColor) {
+            option.checked = true;
+        }
+    });
+
+    // Initialize reset button
+    const resetBtn = document.querySelector(".reset-btn");
+    if (resetBtn) {
+        resetBtn.addEventListener("click", handleResetSettings);
+    }
+}
+
+function handleResetSettings() {
+    // Reset to default theme (light)
+    currentTheme = "light";
+    localStorage.setItem("theme", currentTheme);
+    applyTheme(currentTheme);
+
+    // Reset to default accent color (blue)
+    currentAccentColor = "#4a69bd";
+    localStorage.setItem("accentColor", currentAccentColor);
+    applyAccentColor(currentAccentColor);
+
+    // Update UI
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
+    if (darkModeToggle) {
+        darkModeToggle.checked = false;
+    }
+
+    const colorOptions = document.querySelectorAll(".color-option input[type='radio']");
+    colorOptions.forEach(option => {
+        option.checked = option.value === "#4a69bd";
+    });
+
+    console.log("Settings reset to defaults");
+}
+
+function handleAccentColorChange(event) {
+    currentAccentColor = event.target.value;
+    localStorage.setItem("accentColor", currentAccentColor);
+    applyAccentColor(currentAccentColor);
+}
+
+function applyAccentColor(color) {
+    document.documentElement.style.setProperty("--primary-color", color);
+    // For darker shade
+    const darker = adjustBrightness(color, -0.2);
+    document.documentElement.style.setProperty("--primary-dark", darker);
+}
+
+function adjustBrightness(color, percent) {
+    const hex = color.replace("#", "");
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+
+    const newR = Math.max(0, Math.min(255, Math.round(r * (1 + percent))));
+    const newG = Math.max(0, Math.min(255, Math.round(g * (1 + percent))));
+    const newB = Math.max(0, Math.min(255, Math.round(b * (1 + percent))));
+
+    return `#${newR.toString(16).padStart(2, "0")}${newG.toString(16).padStart(2, "0")}${newB.toString(16).padStart(2, "0")}`;
+}
+
+// ============================================
+// START APPLICATION
+// ============================================
+
+// Wait for loader.js to load components
+window.addEventListener('componentsLoaded', () => {
+    initApp();
+    console.log("✓ Components loaded and app initialized");
+});

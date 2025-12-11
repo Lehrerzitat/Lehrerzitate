@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einstellungen - Lehrerzitate</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <main class="main-content">
+        <div class="tab-content active" id="settings-tab">
+            <div class="page-container settings-container">
+                <div class="page-header">
+                    <h1>⚙️ Einstellungen</h1>
+                    <p>Personalisiere dein Erlebnis</p>
+                </div>
+
+                <div class="settings-content">
+                    <!-- Dark Mode Setting -->
+                    <section class="settings-section">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>🌙 Dark Mode</h3>
+                                <p>Aktiviere den dunklen Modus für angenehmeres Lesen bei Nacht</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="dark-mode-toggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Accent Color Setting -->
+                    <section class="settings-section">
+                        <h3>🎨 Akzentfarbe</h3>
+                        <p class="settings-description">Wähle deine Lieblingsfarbe für die Benutzeroberfläche</p>
+                        
+                        <div class="color-picker-grid">
+                            <div class="color-option" data-color="#4a69bd" title="Blau (Standard)">
+                                <input type="radio" name="accent-color" value="#4a69bd" checked>
+                                <div class="color-preview"></div>
+                                <span>Blau</span>
+                            </div>
+                            <div class="color-option" data-color="#e74c3c" title="Rot">
+                                <input type="radio" name="accent-color" value="#e74c3c">
+                                <div class="color-preview"></div>
+                                <span>Rot</span>
+                            </div>
+                            <div class="color-option" data-color="#27ae60" title="Grün">
+                                <input type="radio" name="accent-color" value="#27ae60">
+                                <div class="color-preview"></div>
+                                <span>Grün</span>
+                            </div>
+                            <div class="color-option" data-color="#f39c12" title="Orange">
+                                <input type="radio" name="accent-color" value="#f39c12">
+                                <div class="color-preview"></div>
+                                <span>Orange</span>
+                            </div>
+                            <div class="color-option" data-color="#9b59b6" title="Lila">
+                                <input type="radio" name="accent-color" value="#9b59b6">
+                                <div class="color-preview"></div>
+                                <span>Lila</span>
+                            </div>
+                            <div class="color-option" data-color="#1abc9c" title="Türkis">
+                                <input type="radio" name="accent-color" value="#1abc9c">
+                                <div class="color-preview"></div>
+                                <span>Türkis</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Info Section -->
+                    <section class="settings-section">
+                        <div class="info-box">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <h4>Automatisch gespeichert</h4>
+                                <p>Deine Einstellungen werden automatisch in deinem Browser gespeichert.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Reset Settings -->
+                    <section class="settings-section">
+                        <button class="reset-btn" id="reset-settings-btn">
+                            <i class="fas fa-redo"></i> Auf Standard zurücksetzen
+                        </button>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/loader.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/settings.js"></script>
+</body>
+</html>
