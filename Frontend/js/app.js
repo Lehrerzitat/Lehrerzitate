@@ -170,6 +170,15 @@ function initApp() {
     console.log("✓ App initialized");
 }
 
+// Debounce utility for input handlers
+function debounce(fn, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn.apply(this, args), wait);
+    };
+}
+
 function setupEventListeners() {
     // Tab Navigation - Desktop
     const navLinksDesktop = document.querySelectorAll(".nav-link-desktop[data-tab]");
@@ -198,9 +207,11 @@ function setupEventListeners() {
     const searchResultsContainer = document.getElementById("search-results-container");
     const quoteTextInput = document.getElementById("quote-text");
 
-    if (searchTeacherInput) searchTeacherInput.addEventListener("input", handleSearchInputs);
-    if (searchSubjectInput) searchSubjectInput.addEventListener("input", handleSearchInputs);
-    if (searchQuoteInput) searchQuoteInput.addEventListener("input", handleSearchInputs);
+    // Debounced search to improve performance while typing
+    const debouncedSearch = debounce(handleSearchInputs, 250);
+    if (searchTeacherInput) searchTeacherInput.addEventListener("input", debouncedSearch);
+    if (searchSubjectInput) searchSubjectInput.addEventListener("input", debouncedSearch);
+    if (searchQuoteInput) searchQuoteInput.addEventListener("input", debouncedSearch);
     if (sortSelect) sortSelect.addEventListener("change", handleSort);
     if (quotesContainer) quotesContainer.addEventListener("click", handleVoteButtonClick);
     if (searchResultsContainer) searchResultsContainer.addEventListener("click", handleVoteButtonClick);
@@ -213,6 +224,18 @@ function setupEventListeners() {
         // Set initial state
         darkModeToggle.checked = currentTheme === "dark";
     }
+
+    // On touch devices, ensure vote buttons do not remain focused after tapping
+    document.addEventListener('touchend', (e) => {
+        try {
+            const active = document.activeElement;
+            if (active && active.classList && active.classList.contains('vote-button')) {
+                active.blur();
+            }
+        } catch (err) {
+            // ignore
+        }
+    }, {passive: true});
 
     // Initialize theme
     applyTheme(currentTheme);
@@ -588,6 +611,16 @@ function handleVoteButtonClick(event) {
     const voteType = button.dataset.vote;
 
     toggleVote(quoteId, voteType);
+
+    // Remove focus from the button to avoid sticky accent background on touch devices
+    try {
+        // blur works for buttons; use setTimeout to ensure it runs after any native focus handling
+        setTimeout(() => {
+            if (button && typeof button.blur === 'function') button.blur();
+        }, 0);
+    } catch (err) {
+        // ignore
+    }
 }
 
 function toggleVote(quoteId, voteType) {

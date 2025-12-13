@@ -404,6 +404,24 @@ body {
     font-size: 0.9rem;
     color: var(--text-light);
     font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.vote-button:focus {
+    outline: none;
+}
+
+.vote-button:focus-visible {
+    box-shadow: 0 0 0 4px rgba(74, 105, 189, 0.12);
+    border-color: var(--primary-color);
+}
+
+/* Ensure tapping (focus/active) on non-active buttons doesn't apply accent background */
+.vote-button:not(.active):focus,
+.vote-button:not(.active):active {
+    background-color: transparent;
+    color: var(--text-light);
+    border-color: var(--border-light);
 }
 
 /* Make hover only affect non-active vote buttons */
@@ -555,6 +573,25 @@ body {
     margin-top: 20px;
 }
 
+/* Search inputs grid layout */
+.search-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .search-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .search-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ============================================
    SUBMIT TAB - FORM
    ============================================ */
@@ -583,7 +620,7 @@ body {
 }
 
 .submit-header p {
-    color: var(--text-light);
+    color: var (--text-light);
     font-size: 0.95rem;
 }
 
