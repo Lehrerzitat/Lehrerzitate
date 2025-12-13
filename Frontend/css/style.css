@@ -277,6 +277,48 @@ body {
     gap: 16px;
 }
 
+/* Brand banner placed above the quotes on the For You page */
+.brand-banner {
+    background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    border-radius: 12px;
+    padding: 18px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--primary-color);
+    transition: var(--transition);
+}
+
+.brand-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.brand-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: -0.5px;
+}
+
+.brand-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin: 0;
+}
+
+@media (min-width: 1024px) {
+    .brand-banner {
+        padding: 20px 22px;
+        margin-bottom: 20px;
+    }
+    .brand-title {
+        font-size: 1.4rem;
+    }
+}
+
 .quote {
     background: var(--bg-white);
     padding: 20px;
@@ -651,7 +693,7 @@ textarea.form-input {
 
 .error-message {
     background-color: rgba(231, 76, 60, 0.1);
-    color: var(--accent-color);
+    color: var (--accent-color);
     border-left: 4px solid var(--accent-color);
 }
 
@@ -1505,5 +1547,47 @@ input:checked + .slider:before {
 
     .about-content p {
         font-size: 0.9rem;
+    }
+}
+
+/* ============================================
+   LOGO STYLES
+   ============================================ */
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-mark {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.15rem;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+}
+
+.brand-banner .brand-title {
+    margin: 0;
+}
+
+.brand-banner .brand-subtitle {
+    margin: 0;
+    opacity: 0.95;
+}
+
+@media (max-width: 480px) {
+    .logo-mark {
+        width: 52px;
+        height: 52px;
+        font-size: 1rem;
     }
 }

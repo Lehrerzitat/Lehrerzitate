@@ -334,6 +334,12 @@ function handlePageNavigation(pageName) {
         case "about":
             switchToPage("about");
             break;
+        case "privacy":
+            switchToPage("privacy");
+            break;
+        case "imprint":
+            switchToPage("imprint");
+            break;
     }
 }
 
@@ -712,11 +718,52 @@ function adjustBrightness(color, percent) {
 }
 
 // ============================================
+// URL HASH NAVIGATION
+// ============================================
+
+function handleHashNavigation() {
+    const hash = (location.hash || '').replace('#', '').trim();
+    if (!hash) return;
+
+    // map some common hash variants to internal pages/tabs
+    const pageMap = {
+        'for-you': 'for-you',
+        'home': 'for-you',
+        'search': 'search',
+        'submit': 'submit',
+        'info': 'info',
+        'settings': 'settings',
+        'about': 'about',
+        'privacy': 'privacy',
+        'datenschutz': 'privacy',
+        'imprint': 'imprint',
+        'impressum': 'imprint'
+    };
+
+    const target = pageMap[hash];
+    if (!target) return;
+
+    // if it's a main tab (for-you/search/submit) use switchTab, else switchToPage
+    if (['for-you', 'search', 'submit'].includes(target)) {
+        switchTab(target);
+    } else {
+        switchToPage(target);
+    }
+}
+
+// Listen for hash changes so links like index.html#privacy work while app is open
+window.addEventListener('hashchange', () => {
+    handleHashNavigation();
+});
+
+// ============================================
 // START APPLICATION
 // ============================================
 
 // Wait for loader.js to load components
 window.addEventListener('componentsLoaded', () => {
     initApp();
+    // After init, handle any hash in the URL (e.g. index.html#privacy)
+    handleHashNavigation();
     console.log("✓ Components loaded and app initialized");
 });
