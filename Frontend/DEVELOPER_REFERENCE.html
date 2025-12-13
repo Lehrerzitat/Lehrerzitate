@@ -1,274 +1,167 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lehrerzitate - Developer Reference</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Lehrerzitate — Developer Reference</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Courier New', monospace;
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        .container { max-width: 900px; margin: 0 auto; }
-        h1 { color: #4a69bd; margin-bottom: 20px; }
-        h2 { color: #27ae60; margin-top: 30px; margin-bottom: 10px; }
-        .section { margin-bottom: 30px; padding: 15px; background: #252526; border-left: 4px solid #4a69bd; }
-        .command { background: #1e1e1e; padding: 10px; margin: 10px 0; border-radius: 4px; color: #ce9178; }
-        .file { color: #9cdcfe; }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #444; }
-        th { background: #2d2d30; color: #4a69bd; }
-        .success { color: #27ae60; }
-        .error { color: #e74c3c; }
-        .note { color: #f39c12; }
-        .new { color: #f39c12; font-weight: bold; }
-        a { color: #4a69bd; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        :root{--bg:#0f1720;--panel:#0b1220;--accent:#4a69bd;--muted:#9aa6b2;--success:#27ae60;--danger:#e74c3c}
+        *{box-sizing:border-box}
+        html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial; background:var(--bg);color:#d9e2ec}
+        .wrap{max-width:1100px;margin:28px auto;padding:22px;background:linear-gradient(180deg,var(--panel),#07101a);border-radius:12px;box-shadow:0 6px 30px rgba(0,0,0,0.6)}
+        h1{margin:0 0 8px;color:var(--accent)}
+        h2{color:#cfe3ff;margin:20px 0 8px;font-size:1.05rem}
+        p{margin:8px 0;color:#c7d6e5}
+        pre{background:#061421;padding:12px;border-radius:8px;color:#9ee5c4;overflow:auto}
+        .muted{color:var(--muted)}
+        .grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+        .panel{background:#071526;padding:14px;border-radius:8px;border:1px solid rgba(255,255,255,0.02)}
+        table{width:100%;border-collapse:collapse;margin-top:8px}
+        td,th{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);font-size:0.92rem}
+        th{color:var(--accent);text-align:left}
+        ul{margin:8px 0 12px 18px}
+        a{color:var(--accent)}
+        .ok{color:var(--success)}
+        code{background:#061421;padding:2px 6px;border-radius:6px;color:#9fe}
+        .cmd{display:inline-block;padding:8px 10px;border-radius:8px;background:#021520;color:#9fe;font-weight:700}
+        footer{margin-top:18px;color:var(--muted);font-size:0.86rem}
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 Lehrerzitate Frontend - Developer Reference</h1>
+    <div class="wrap">
+        <h1>Lehrerzitate — Developer Reference</h1>
+        <p class="muted">Kompakter QuickStart + Übersicht über Struktur & Verantwortlichkeiten. Ziel: Neuer Entwickler versteht Projekt in 5–10 Minuten.</p>
 
-        <div class="section">
-            <h2>⚡ Quick Start (Copy-Paste)</h2>
-            <div class="command">cd Frontend/html && python -m http.server 8000</div>
-            <p>Then open: <a href="http://localhost:8000">http://localhost:8000</a></p>
+        <h2>QuickStart (sehr kompakt)</h2>
+        <div class="grid">
+            <div>
+                <p>1) Lokalen Webserver starten (Windows):</p>
+                <pre class="cmd">cd Frontend/html
+python -m http.server 8000</pre>
+                <p>2) Öffne <a href="http://localhost:8000">http://localhost:8000</a> im Browser.</p>
+                <p>3) Browser‑Console (F12) offen halten — viele Aktionen loggen sich selbst.</p>
+
+                <h2>Schnelle Orientierung</h2>
+                <p class="muted">Wichtigste Orte im Repo:</p>
+                <ul>
+                    <li><code>html/index.html</code> — Hauptseite & Tab‑Container</li>
+                    <li><code>html/header.html</code>, <code>html/footer.html</code> — geladene Komponenten (loader.js)</li>
+                    <li><code>css/style.css</code> — globale Stile & Variablen (Akzentfarben, Dark Mode)</li>
+                    <li><code>js/app.js</code> — App‑Initialisierung, Tab‑Routing, Theme‑Glue</li>
+                    <li><code>js/ui.js</code> — Rendering (Quote‑Cards, Seiten) und DOM‑Hilfsfunktionen</li>
+                    <li><code>js/search.js</code> — Such‑/Filter‑/Sort‑Logik</li>
+                    <li><code>js/votes.js</code> — Voting (optimistische UI) & localStorage persistence</li>
+                    <li><code>js/utils.js</code> — kleine Helper (debounce, escapeHtml, shuffle, ...)</li>
+                </ul>
+
+                <h2>Wie die Seite geladen wird</h2>
+                <ol>
+                    <li><code>index.html</code> lädt <code>loader.js</code>, welches <code>header.html</code> & <code>footer.html</code> per fetch einfügt.</li>
+                    <li>Skripte werden in dieser Reihenfolge eingebunden: <code>utils.js</code> → <code>ui.js</code> → <code>votes.js</code> → <code>search.js</code> → <code>app.js</code>.</li>
+                    <li><code>app.js</code> wartet auf ein Ereignis <code>componentsLoaded</code>, dann ruft <code>initApp()</code> auf.</li>
+                </ol>
+
+                <h2>Run / Dev Tipps</h2>
+                <ul>
+                    <li>Wenn du HTML Komponenten änderst: Loader cached nicht — aktualisiere die Seite.</li>
+                    <li>Nutze <code>console.log</code> in den zentralen Funktionen (<code>initApp</code>, <code>loadQuotes</code>, <code>toggleVote</code>) zum Debuggen.</li>
+                    <li>Bei CSS‑Änderungen manchmal Hard‑Reload nötig (Ctrl+F5).</li>
+                </ul>
+
+            </div>
+
+            <aside class="panel">
+                <h3>Project Layout</h3>
+                <pre>Frontend/
+  html/
+    index.html
+    header.html
+    footer.html
+  css/
+    style.css
+  js/
+    loader.js
+    utils.js
+    ui.js
+    votes.js
+    search.js
+    app.js
+    submit.js
+</pre>
+                <p class="muted">(Weitere Dateien: game UI, privacy/imprint pages existieren in <code>html/</code>.)</p>
+            </aside>
         </div>
 
-        <div class="section">
-            <h2>📁 File Structure</h2>
-            <pre>Frontend/
-├── html/           Files to edit for structure
-│   ├── index.html       Main page (55 lines)
-│   ├── header.html      <span class="new">✨ NEW Header component</span>
-│   ├── footer.html      <span class="new">✨ NEW Footer component</span>
-│   ├── about.html       <span class="new">✨ NEW About page</span>
-│   ├── info.html        <span class="new">✨ NEW Info page</span>
-│   ├── settings.html    <span class="new">✨ NEW Settings page</span>
-│   └── submit.html      Form page (100 lines)
-├── css/            Files to edit for styling
-│   ├── style.css        Global styles with dark mode (450 lines)
-│   ├── settings.css     <span class="new">✨ NEW Settings page styles</span>
-│   └── submit.css       Form styles (200 lines)
-├── js/             Files to edit for logic
-│   ├── app.js           Quote logic with theme support (480 lines)
-│   ├── loader.js        <span class="new">✨ NEW Component loader</span>
-│   ├── settings.js      <span class="new">✨ NEW Settings page logic</span>
-│   └── submit.js        Form logic (280 lines)
-├── img/            For future assets
-├── README.md       Full documentation
-└── QUICKSTART.md   Getting started</pre>
-        </div>
-
-        <div class="section">
-            <h2>🔧 Key Functions Reference</h2>
+        <h2>Modul‑Verantwortlichkeiten (Kurz & Präzise)</h2>
+        <div class="panel">
             <table>
-                <tr><th>File</th><th>Function</th><th>Purpose</th></tr>
-                <tr><td><span class="file">app.js</span></td><td>initApp()</td><td>Initialize app</td></tr>
-                <tr><td><span class="file">app.js</span></td><td>renderQuotes()</td><td>Display quotes</td></tr>
-                <tr><td><span class="file">app.js</span></td><td>handleSearch()</td><td>Search filter</td></tr>
-                <tr><td><span class="file">app.js</span></td><td>toggleVote()</td><td>Voting logic</td></tr>
-                <tr><td><span class="file">app.js</span></td><td><span class="new">applyTheme()</span></td><td><span class="new">Apply dark mode & colors</span></td></tr>
-                <tr><td><span class="file">app.js</span></td><td><span class="new">toggleDarkMode()</span></td><td><span class="new">Toggle dark theme</span></td></tr>
-                <tr><td><span class="file">app.js</span></td><td><span class="new">changeAccentColor()</span></td><td><span class="new">Change accent color</span></td></tr>
-                <tr><td><span class="file">settings.js</span></td><td><span class="new">initSettings()</span></td><td><span class="new">Initialize settings page</span></td></tr>
-                <tr><td><span class="file">settings.js</span></td><td><span class="new">resetSettings()</span></td><td><span class="new">Reset to defaults</span></td></tr>
-                <tr><td><span class="file">loader.js</span></td><td><span class="new">loadComponent()</span></td><td><span class="new">Load HTML components</span></td></tr>
-                <tr><td><span class="file">submit.js</span></td><td>validateForm()</td><td>Validate inputs</td></tr>
-                <tr><td><span class="file">submit.js</span></td><td>submitQuote()</td><td>Submit to backend</td></tr>
+                <tr><th>Datei</th><th>Aufgabe / Überblick</th></tr>
+                <tr><td><code>js/loader.js</code></td><td>Lädt header/footer per fetch und feuert Event <code>componentsLoaded</code>. Änderungen an Header/Footer wirken auf alle Seiten.</td></tr>
+                <tr><td><code>js/utils.js</code></td><td>Allgemeine Helfer: <code>debounce</code>, <code>escapeHtml</code>, <code>escapeRegex</code>, <code>shuffleArray</code>, <code>pickRandom</code>, <code>adjustBrightness</code>. Keine DOM‑Manipulation hier.</td></tr>
+                <tr><td><code>js/ui.js</code></td><td>Rendering: <code>createQuoteCard()</code>, <code>renderQuotes()</code>, <code>renderForYouPage()</code>. Verantwortlich für HTML‑Erzeugung und einfache DOM‑Einfügungen.</td></tr>
+                <tr><td><code>js/search.js</code></td><td>Such‑ und Filterlogik: separates Teacher/Subject/Quote Inputs, Regex‑based quote search, ruft <code>renderQuotes()</code> nach Filterung auf.</td></tr>
+                <tr><td><code>js/votes.js</code></td><td>Voting: optimistische UI Updates, Toggle‑Logik, Speichern/Lesen von Votes in <code>localStorage</code>. Kann später durch API‑Aufrufe ersetzt werden.</td></tr>
+                <tr><td><code>js/app.js</code></td><td>Glue‑Code: App‑Start, Tab/Hash‑Routing, Theme & Accent Color Handling (setzt CSS‑Variablen), initialisiert Event Listener und Module.</td></tr>
+                <tr><td><code>js/submit.js</code></td><td>Formular‑Validierung & Senden. Aktuell lokal (Dummy), vorgesehen für Backend‑Integration.</td></tr>
             </table>
         </div>
 
-        <div class="section">
-            <h2>🎨 CSS Variables (Customize Colors)</h2>
-            <p>Edit <span class="file">css/style.css</span> line 6-25:</p>
-            <pre>:root {
-    --primary-color: #4a69bd;      /* Blue */
-    --primary-dark: #3d5a99;       /* Dark Blue */
-    --secondary-color: #f39c12;    /* Orange */
-    --accent-color: #e74c3c;       /* Red */
-    --success-color: #27ae60;      /* Green */
-    --text-dark: #2c3e50;          /* Dark Gray */
-    --text-light: #7f8c8d;         /* Light Gray */
-}
+        <h2>Wichtige Flows & wo anzupassen</h2>
+        <div class="panel">
+            <h3>Quotes laden</h3>
+            <p><code>app.js</code> enthält momentan Dummy‑Daten in <code>dummyQuotes</code>. Für echtes Backend ersetze die Stelle in <code>loadQuotes()</code> mit <code>fetch('/api/quotes')</code> und mappe das Resultat auf das interne Format (id, text, teacher, subject, upvotes, downvotes, date, userVote).</p>
 
-<span class="new">/* Dark mode styles - auto applied with data-theme="dark" */
-[data-theme="dark"] {
-    --bg-primary: #1a1a1a;
-    --bg-secondary: #2d2d2d;
-    --text-color: #e8e8e8;
-}</span></pre>
+            <h3>Voting</h3>
+            <p>Die Funktionalität ist in <code>js/votes.js</code>. Aktuell wird lokal gespeichert mit <code>localStorage.userVotes</code>. Ersetze intern die Stelle in <code>toggleVote()</code> oder erweitere sie, um API‑Aufrufe zu machen und serverseitige Persistenz zu erhalten.</p>
+
+            <h3>Search & Sort</h3>
+            <p>Suchlogik in <code>js/search.js</code>. Filterung ist case‑insensitive; Zitat‑Suche verwendet Wortgrenzen (RegExp mit <code>\b</code>). Sortierung geschieht in <code>sortQuotes()</code> (in app.js).</p>
+
+            <h3>Theme & Farben</h3>
+            <p>Akzentfarbe wird in <code>app.js</code> durch <code>applyAccentColor()</code> gesetzt — sie verändert CSS‑Variablen <code>--primary-color</code> und <code>--primary-dark</code>. Dark mode wird über <code>data-theme="dark"</code> am <code>html</code>-Element gesteuert.</p>
         </div>
 
-        <div class="section">
-            <h2><span class="new">✨ NEW: Theme & Settings System</span></h2>
-            <p><strong>Dark Mode & Accent Colors:</strong></p>
-            <ul>
-                <li>Dark mode toggle stored in <code>localStorage</code></li>
-                <li>Accent color preference saved and persisted</li>
-                <li>5 available accent colors: Blue, Red, Green, Orange, Purple</li>
-                <li>Settings page has UI controls for both</li>
-                <li>Reset button restores defaults</li>
-            </ul>
-            <p><strong>localStorage keys:</strong></p>
-            <pre>localStorage.getItem('darkMode')       // 'true' or 'false'
-localStorage.getItem('accentColor')    // Color hex value
-localStorage.getItem('userSettings')   // All settings object</pre>
-        </div>
-
-        <div class="section">
-            <h2><span class="new">✨ NEW: Tab System</span></h2>
-            <p><strong>5 Tabs Available:</strong></p>
+        <h2>Backend Integrations‑Map (wo was anpassen)</h2>
+        <div class="panel">
             <table>
-                <tr><th>Tab</th><th>Page</th><th>Purpose</th></tr>
-                <tr><td>For You</td><td>index.html</td><td>Browse & vote on quotes</td></tr>
-                <tr><td><span class="new">Info</span></td><td><span class="new">info.html</span></td><td><span class="new">Feature guide & how-to</span></td></tr>
-                <tr><td><span class="new">Settings</span></td><td><span class="new">settings.html</span></td><td><span class="new">Dark mode, colors, reset</span></td></tr>
-                <tr><td><span class="new">About</span></td><td><span class="new">about.html</span></td><td><span class="new">Project mission & info</span></td></tr>
-                <tr><td>Submit</td><td>submit.html</td><td>Submit new quotes</td></tr>
+                <tr><th>Frontend</th><th>Backend Endpoint (Empfohlen)</th><th>Was zu tun ist</th></tr>
+                <tr><td><code>loadQuotes()</code> (app.js)</td><td><code>GET /api/quotes</code></td><td>Return JSON array of quotes. Map to internal shape.</td></tr>
+                <tr><td><code>toggleVote()</code> (votes.js/app.js)</td><td><code>POST /api/quotes/{id}/vote</code></td><td>Senden: { userId, vote: 'up'|'down'|null } → Update counts and reply with new counts.</td></tr>
+                <tr><td><code>submitQuote()</code> (submit.js)</td><td><code>POST /api/quotes</code></td><td>Send new quote object, server returns saved object with id/date.</td></tr>
             </table>
+            <p class="muted">Backend muss Auth/Rate‑Limit beachten; UI erwartet fast Antworten — verwende optimistic UI und fallback auf server‑Antwort.</p>
         </div>
 
-        <div class="section">
-            <h2>📊 Dummy Data Location</h2>
-            <p>Edit <span class="file">js/app.js</span> line 12-50:</p>
-            <p>Array: <code>dummyQuotes[]</code></p>
-            <p>Example quote object:</p>
-            <pre>{
-    id: 1,
-    text: "Quote text...",
-    teacher: "Teacher Name",
-    subject: "Subject",
-    upvotes: 342,
-    downvotes: 15,
-    date: "2025-01-10",
-    userVote: null
-}</pre>
-        </div>
-
-        <div class="section">
-            <h2>🔗 Backend Integration (TODO)</h2>
-            <table>
-                <tr><th>File</th><th>Function</th><th>Replace With</th></tr>
-                <tr><td><span class="file">app.js</span></td><td>initApp()</td><td>fetch('/api/quotes')</td></tr>
-                <tr><td><span class="file">app.js</span></td><td>toggleVote()</td><td>fetch('/api/quotes/{id}/vote')</td></tr>
-                <tr><td><span class="file">submit.js</span></td><td>submitQuote()</td><td>fetch('/api/quotes/submit')</td></tr>
-            </table>
-            <p class="note">💡 Tip: Look for "TODO" comments in code for exact locations</p>
-        </div>
-
-        <div class="section">
-            <h2>🧪 Testing Checklist</h2>
+        <h2>Testing & Debugging</h2>
+        <div class="panel">
             <ul>
-                <li>☐ Page loads without errors</li>
-                <li>☐ All quotes display</li>
-                <li>☐ Search filters work</li>
-                <li>☐ Sort options work</li>
-                <li>☐ Voting buttons work</li>
-                <li>☐ <span class="new">All tabs load correctly</span></li>
-                <li>☐ <span class="new">Dark mode toggle works</span></li>
-                <li>☐ <span class="new">Accent colors change app theme</span></li>
-                <li>☐ <span class="new">Reset settings restores defaults</span></li>
-                <li>☐ <span class="new">Settings persist across page reload</span></li>
-                <li>☐ Submit form validates</li>
-                <li>☐ Responsive on mobile (F12)</li>
-                <li>☐ No console errors</li>
+                <li>Check Console Logs: initApp(), loadQuotes(), toggleVote(), applyAccentColor()</li>
+                <li>LocalStorage: <code>localStorage.userVotes</code> und <code>localStorage.accentColor</code></li>
+                <li>Devices: Teste Mobile (touch) wegen voting focus quirks (pointerdown handling ist implementiert)</li>
+                <li>Run quick server with Python or any static server</li>
             </ul>
         </div>
 
-        <div class="section">
-            <h2>🐛 Debugging Tips</h2>
-            <ul>
-                <li>Open browser console: <kbd>F12</kbd></li>
-                <li>All actions log to console</li>
-                <li>Check <code>localStorage</code> in DevTools → Application tab</li>
-                <li>Check Network tab for API calls (after backend added)</li>
-                <li>Toggle device toolbar: <kbd>Ctrl+Shift+M</kbd></li>
-                <li>Clear cache: <kbd>Ctrl+Shift+Delete</kbd></li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>📝 Common Edits</h2>
-            <table>
-                <tr><th>What to Edit</th><th>File</th><th>Location</th></tr>
-                <tr><td>Header text</td><td>index.html</td><td>Line 12-14</td></tr>
-                <tr><td>Colors</td><td>style.css</td><td>Line 6-18 (:root)</td></tr>
-                <tr><td>Quotes</td><td>app.js</td><td>Line 12-50 (dummyQuotes)</td></tr>
-                <tr><td><span class="new">Accent colors</span></td><td><span class="new">settings.html</span></td><td><span class="new">Color buttons</span></td></tr>
-                <tr><td><span class="new">Add new accent</span></td><td><span class="new">app.js & settings.html</span></td><td><span class="new">accentColors object</span></td></tr>
-                <tr><td>Form fields</td><td>submit.html</td><td>Line 30-75</td></tr>
-                <tr><td>Validation rules</td><td>submit.js</td><td>Line 84-120 (validateForm)</td></tr>
-            </table>
-        </div>
-
-        <div class="section">
-            <h2>✅ Files Checklist</h2>
-            <pre><span class="success">✓</span> Frontend/html/index.html
-<span class="success">✓</span> Frontend/html/header.html       <span class="new">✨ NEW</span>
-<span class="success">✓</span> Frontend/html/footer.html       <span class="new">✨ NEW</span>
-<span class="success">✓</span> Frontend/html/about.html        <span class="new">✨ NEW</span>
-<span class="success">✓</span> Frontend/html/info.html         <span class="new">✨ NEW</span>
-<span class="success">✓</span> Frontend/html/settings.html     <span class="new">✨ NEW</span>
-<span class="success">✓</span> Frontend/html/submit.html
-<span class="success">✓</span> Frontend/css/style.css          <span class="new">✨ Updated (dark mode)</span>
-<span class="success">✓</span> Frontend/css/settings.css       <span class="new">✨ NEW</span>
-<span class="success">✓</span> Frontend/css/submit.css
-<span class="success">✓</span> Frontend/js/app.js              <span class="new">✨ Updated (theme system)</span>
-<span class="success">✓</span> Frontend/js/loader.js           <span class="new">✨ NEW</span>
-<span class="success">✓</span> Frontend/js/settings.js         <span class="new">✨ NEW</span>
-<span class="success">✓</span> Frontend/js/submit.js
-<span class="success">✓</span> Frontend/README.md
-<span class="success">✓</span> Frontend/QUICKSTART.md</pre>
-        </div>
-
-        <div class="section">
-            <h2>📚 Documentation Files</h2>
-            <ul>
-                <li><a href="../Frontend/QUICKSTART.md">QUICKSTART.md</a> - 1-minute setup <span class="new">✨ Updated with new tabs & features</span></li>
-                <li><a href="../Frontend/README.md">README.md</a> - Full technical docs <span class="new">✨ Updated with settings & theme info</span></li>
-                <li><a href="../FRONTEND_SUMMARY.md">FRONTEND_SUMMARY.md</a> - Project overview <span class="new">✨ Updated with all features</span></li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>🎯 Next Steps</h2>
+        <h2>Common Tasks (How‑tos)</h2>
+        <div class="panel">
+            <h3>1) Neue Akzentfarbe hinzufügen</h3>
             <ol>
-                <li>Run: <code>cd Frontend/html && python -m http.server 8000</code></li>
-                <li>Test all tabs and features</li>
-                <li>Test dark mode toggle and accent colors</li>
-                <li>Test settings reset button</li>
-                <li>Verify settings persist on page reload</li>
-                <li>Customize colors/text if needed</li>
-                <li>Connect to backend (follow TODO comments)</li>
-                <li>Deploy!</li>
+                <li>Füge Hex in <code>settings.html</code> / color picker hinzu.</li>
+                <li>Stelle sicher, dass <code>settings.js</code> die neue Farbe in <code>localStorage</code> speichert.</li>
+                <li>Default kann in <code>css/style.css :root</code> gesetzt werden.</li>
+            </ol>
+
+            <h3>2) Neues Feld zu Quotes (z. B. school)</h3>
+            <ol>
+                <li>Backend: API liefert neues Feld.</li>
+                <li>Frontend: mappe es in <code>loadQuotes()</code> und erweitere <code>createQuoteCard()</code> (ui.js) um Anzeige.</li>
+                <li>Option: aktualisiere Search (search.js) wenn filterbar.</li>
             </ol>
         </div>
 
-        <div class="section" style="border-left-color: #27ae60;">
-            <h2 style="color: #27ae60;">✅ Project Status</h2>
-            <p><span class="success">COMPLETE WITH NEW FEATURES - READY FOR TESTING</span></p>
-            <p>All features work with dummy data including:</p>
-            <ul>
-                <li>✓ 5 tabs (For You, Info, Settings, About, Submit)</li>
-                <li>✓ Quote browser with search & voting</li>
-                <li>✓ Dark mode toggle with persistence</li>
-                <li>✓ 5 customizable accent colors</li>
-                <li>✓ Settings reset button</li>
-                <li>✓ Quote submission form</li>
-            </ul>
-            <p>No backend required to test UI.</p>
-        </div>
-
-        <hr style="border: 1px solid #444; margin-top: 40px; margin-bottom: 20px;">
-        <p style="text-align: center; color: #7f8c8d; font-size: 0.9em;">
-            Built with ❤️ using vanilla HTML, CSS, and JavaScript
-        </p>
+        <footer>
+            Stand: 13.12.2025 — Für schnelle Fragen: öffne die Console, such nach '✓' oder 'Fehler' Logs. Bei größeren Refactors: bitte Tests / smoke checks lokal ausführen.
+        </footer>
     </div>
 </body>
 </html>
