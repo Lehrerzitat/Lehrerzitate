@@ -171,13 +171,7 @@ function initApp() {
 }
 
 // Debounce utility for input handlers
-function debounce(fn, wait) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => fn.apply(this, args), wait);
-    };
-}
+// debounce moved to js/utils.js
 
 function setupEventListeners() {
     // Tab Navigation - Desktop
@@ -664,9 +658,9 @@ function applyFiltersAndSort() {
     renderQuotes();
 }
 
-function escapeRegex(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+// escapeHtml, escapeRegex, pickRandom, shuffleArray, adjustBrightness
+// have been moved to js/utils.js to keep app.js concise and modular.
+// Use those helpers directly.
 
 function sortQuotes(quotes, mode) {
     switch (mode) {
@@ -785,16 +779,6 @@ function updateCharCount() {
 }
 
 // ============================================
-// UTILITY FUNCTIONS
-// ============================================
-
-function escapeHtml(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// ============================================
 // THEME & SETTINGS
 // ============================================
 
@@ -874,18 +858,7 @@ function applyAccentColor(color) {
     document.documentElement.style.setProperty("--primary-dark", darker);
 }
 
-function adjustBrightness(color, percent) {
-    const hex = color.replace("#", "");
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-
-    const newR = Math.max(0, Math.min(255, Math.round(r * (1 + percent))));
-    const newG = Math.max(0, Math.min(255, Math.round(g * (1 + percent))));
-    const newB = Math.max(0, Math.min(255, Math.round(b * (1 + percent))));
-
-    return `#${newR.toString(16).padStart(2, "0")}${newG.toString(16).padStart(2, "0")}${newB.toString(16).padStart(2, "0")}`;
-}
+// adjustBrightness moved to js/utils.js
 
 // ============================================
 // URL HASH NAVIGATION
