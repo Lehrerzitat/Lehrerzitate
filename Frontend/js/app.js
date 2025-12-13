@@ -4,24 +4,6 @@
  */
 
 // ============================================
-// API CONFIGURATION
-// ============================================
-
-const API_BASE_URL = localStorage.getItem('apiUrl') || 'http://localhost:3000/api';
-
-// Generiere oder hole User-ID für Vote-Tracking
-function getUserId() {
-  let userId = localStorage.getItem('userId');
-  if (!userId) {
-    userId = 'user_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('userId', userId);
-  }
-  return userId;
-}
-
-const CURRENT_USER_ID = getUserId();
-
-// ============================================
 // DUMMY DATA
 // ============================================
 
@@ -160,6 +142,18 @@ let currentTab = "for-you";
 let currentTheme = localStorage.getItem("theme") || "light";
 let currentAccentColor = localStorage.getItem("accentColor") || "#4a69bd";
 let isLoadingQuotes = false;
+
+// Generiere oder hole User-ID für Vote-Tracking
+function getUserId() {
+  let userId = localStorage.getItem('userId');
+  if (!userId) {
+    userId = 'user_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('userId', userId);
+  }
+  return userId;
+}
+
+const CURRENT_USER_ID = getUserId();
 
 // ============================================
 // INITIALIZATION
@@ -387,23 +381,13 @@ async function loadQuotes() {
             quotesContainer.innerHTML = '<p class="loading">Lade Zitate...</p>';
         }
 
-        const response = await fetch(`${API_BASE_URL}/quotes?sort=newest`);
-        
-        if (!response.ok) {
-            throw new Error(`API-Fehler: ${response.status}`);
-        }
+        // Verwende Dummy-Daten
+        allQuotes = dummyQuotes.map(quote => ({
+            ...quote,
+            userVote: null
+        }));
 
-        const data = await response.json();
-        
-        if (data.success && Array.isArray(data.data)) {
-            allQuotes = data.data.map(quote => ({
-                ...quote,
-                userVote: null
-            }));
-            console.log(`✅ ${allQuotes.length} Zitate geladen`);
-        } else {
-            throw new Error('Ungültige API-Response');
-        }
+        console.log(`✅ ${allQuotes.length} Zitate geladen`);
 
         // Nutzer-Votes laden
         await loadUserVotes();
