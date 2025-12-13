@@ -51,23 +51,36 @@
                 </div>
 
                 <div class="search-filters">
-                    <div class="search-box-wrapper">
-                        <i class="fas fa-search search-icon"></i>
-                        <input 
-                            type="text" 
-                            id="search-input" 
-                            class="search-input" 
-                            placeholder="Lehrer, Fach oder Zitat..."
-                        >
-                    </div>
+                    <div class="search-grid">
+                        <div class="search-box-wrapper">
+                            <i class="fas fa-user search-icon"></i>
+                            <input
+                                type="text"
+                                id="search-teacher"
+                                class="search-input"
+                                placeholder="Lehrer (z. B. Herr Müller)"
+                            />
+                        </div>
 
-                    <div class="sort-wrapper">
-                        <label for="sort-select">Sortieren:</label>
-                        <select id="sort-select" class="sort-select">
-                            <option value="newest">Neueste zuerst</option>
-                            <option value="popular">Beliebte zuerst</option>
-                            <option value="oldest">Älteste zuerst</option>
-                        </select>
+                        <div class="search-box-wrapper">
+                            <i class="fas fa-book search-icon"></i>
+                            <input
+                                type="text"
+                                id="search-subject"
+                                class="search-input"
+                                placeholder="Fach (z. B. Mathematik)"
+                            />
+                        </div>
+
+                        <div class="search-box-wrapper">
+                            <i class="fas fa-quote-left search-icon"></i>
+                            <input
+                                type="text"
+                                id="search-quote"
+                                class="search-input"
+                                placeholder="Zitat (Wörter oder ganze Phrasen)"
+                            />
+                        </div>
                     </div>
                 </div>
 

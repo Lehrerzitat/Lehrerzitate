@@ -138,6 +138,9 @@ let allQuotes = [];
 let filteredQuotes = [];
 let currentSortMode = "newest";
 let currentSearchQuery = "";
+let currentSearchTeacher = "";
+let currentSearchSubject = "";
+let currentSearchQuote = "";
 let currentTab = "for-you";
 let currentTheme = localStorage.getItem("theme") || "light";
 let currentAccentColor = localStorage.getItem("accentColor") || "#4a69bd";
@@ -187,13 +190,17 @@ function setupEventListeners() {
     setupMobileMoreMenu();
 
     // Search and sort
-    const searchInput = document.getElementById("search-input");
+    const searchTeacherInput = document.getElementById("search-teacher");
+    const searchSubjectInput = document.getElementById("search-subject");
+    const searchQuoteInput = document.getElementById("search-quote");
     const sortSelect = document.getElementById("sort-select");
     const quotesContainer = document.getElementById("quotes-container");
     const searchResultsContainer = document.getElementById("search-results-container");
     const quoteTextInput = document.getElementById("quote-text");
 
-    if (searchInput) searchInput.addEventListener("input", handleSearch);
+    if (searchTeacherInput) searchTeacherInput.addEventListener("input", handleSearchInputs);
+    if (searchSubjectInput) searchSubjectInput.addEventListener("input", handleSearchInputs);
+    if (searchQuoteInput) searchQuoteInput.addEventListener("input", handleSearchInputs);
     if (sortSelect) sortSelect.addEventListener("change", handleSort);
     if (quotesContainer) quotesContainer.addEventListener("click", handleVoteButtonClick);
     if (searchResultsContainer) searchResultsContainer.addEventListener("click", handleVoteButtonClick);
@@ -209,6 +216,16 @@ function setupEventListeners() {
 
     // Initialize theme
     applyTheme(currentTheme);
+}
+
+function handleSearchInputs(e) {
+    currentSearchTeacher = (document.getElementById('search-teacher')?.value || '').trim().toLowerCase();
+    currentSearchSubject = (document.getElementById('search-subject')?.value || '').trim().toLowerCase();
+    currentSearchQuote = (document.getElementById('search-quote')?.value || '').trim().toLowerCase();
+
+    if (currentTab === 'search') {
+        applyFiltersAndSort();
+    }
 }
 
 function setupDesktopMoreMenu() {
@@ -496,25 +513,33 @@ function applyFiltersAndSort() {
     filteredQuotes = [...allQuotes];
 
     // Nur Suchfilter im Search-Tab anwenden
-    if (currentTab === "search" && currentSearchQuery) {
+    if (currentTab === "search") {
         filteredQuotes = filteredQuotes.filter((quote) => {
             const text = quote.text.toLowerCase();
-            const teacher = quote.teacher.toLowerCase();
-            const subject = quote.subject ? quote.subject.toLowerCase() : "";
+            const teacher = (quote.teacher || '').toLowerCase();
+            const subject = (quote.subject || '').toLowerCase();
 
-            // Suche nach ganzen Wörtern, nicht nach Teilstrings
-            const searchWords = currentSearchQuery.trim().split(/\s+/);
-            
-            return searchWords.some(word => {
-                // Exakte Übereinstimmung für Teacher und Subject
-                if (teacher === word || subject === word) {
-                    return true;
-                }
-                
-                // Für den Textinhalt: Nach ganzen Wörtern suchen
-                const wordBoundaryRegex = new RegExp(`\\b${escapeRegex(word)}\\b`, 'gi');
-                return wordBoundaryRegex.test(text);
-            });
+            // Teacher filter: partial match
+            const teacherOk = currentSearchTeacher ? teacher.includes(currentSearchTeacher) : true;
+
+            // Subject filter: partial match
+            const subjectOk = currentSearchSubject ? subject.includes(currentSearchSubject) : true;
+
+            // Quote filter: require all words to appear as whole words in the quote text
+            let quoteOk = true;
+            if (currentSearchQuote) {
+                const words = currentSearchQuote.split(/\s+/).filter(Boolean);
+                quoteOk = words.every(w => {
+                    try {
+                        const re = new RegExp(`\\b${escapeRegex(w)}\\b`, 'i');
+                        return re.test(text);
+                    } catch (err) {
+                        return text.includes(w);
+                    }
+                });
+            }
+
+            return teacherOk && subjectOk && quoteOk;
         });
     }
 
