@@ -411,9 +411,12 @@ body {
     outline: none;
 }
 
-.vote-button:focus-visible {
-    box-shadow: 0 0 0 4px rgba(74, 105, 189, 0.12);
-    border-color: var(--primary-color);
+/* focus-visible only on hover-capable devices to avoid touch focus showing accent */
+@media (hover: hover) {
+    .vote-button:focus-visible {
+        box-shadow: 0 0 0 4px rgba(74, 105, 189, 0.12);
+        border-color: var(--primary-color);
+    }
 }
 
 /* Ensure tapping (focus/active) on non-active buttons doesn't apply accent background */
@@ -424,23 +427,43 @@ body {
     border-color: var(--border-light);
 }
 
-/* Make hover only affect non-active vote buttons */
-.vote-button:not(.active):hover {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-    background-color: var(--bg-light);
+/* Make hover only affect non-active vote buttons on hover-capable devices */
+@media (hover: hover) {
+    .vote-button:not(.active):hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+        background-color: var(--bg-light);
+    }
 }
 
-/* Ensure active vote buttons keep their active background when hovered */
+/* On touch devices, prevent hover/active from showing accent color */
+@media (hover: none) {
+    .vote-button:not(.active):hover,
+    .vote-button:not(.active):active,
+    .vote-button:not(.active):focus {
+        border-color: var(--border-light);
+        color: var(--text-light);
+        background-color: transparent;
+    }
+
+    /* Slight active press feedback without changing accent */
+    .vote-button:active {
+        transform: scale(0.97);
+    }
+}
+
+/* Ensure active vote buttons keep their active background when hovered or active */
 .vote-button.upvote.active,
-.vote-button.upvote.active:hover {
+.vote-button.upvote.active:hover,
+.vote-button.upvote.active:active {
     background-color: rgba(39, 174, 96, 0.1);
     color: var(--success-color);
     border-color: var(--success-color);
 }
 
 .vote-button.downvote.active,
-.vote-button.downvote.active:hover {
+.vote-button.downvote.active:hover,
+.vote-button.downvote.active:active {
     background-color: rgba(231, 76, 60, 0.1);
     color: var(--accent-color);
     border-color: var(--accent-color);
@@ -735,7 +758,7 @@ textarea.form-input {
 .error-message {
     background-color: rgba(231, 76, 60, 0.1);
     color: var (--accent-color);
-    border-left: 4px solid var(--accent-color);
+    border-left: 4px solid var (--accent-color);
 }
 
 .message p {

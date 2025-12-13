@@ -610,6 +610,54 @@ function handleVoteButtonClick(event) {
     const quoteId = parseInt(button.dataset.quoteId);
     const voteType = button.dataset.vote;
 
+    // Optimistic UI update: update classes and counts immediately so touch shows correct color
+    try {
+        const quoteEl = document.querySelector(`.quote[data-quote-id='${quoteId}']`);
+        if (quoteEl) {
+            const upBtn = quoteEl.querySelector('.vote-button.upvote');
+            const downBtn = quoteEl.querySelector('.vote-button.downvote');
+            const upCountEl = upBtn.querySelector('.vote-count');
+            const downCountEl = downBtn.querySelector('.vote-count');
+
+            const upCount = parseInt(upCountEl.textContent || '0');
+            const downCount = parseInt(downCountEl.textContent || '0');
+
+            if (voteType === 'up') {
+                if (button.classList.contains('active')) {
+                    // undo upvote
+                    button.classList.remove('active');
+                    upCountEl.textContent = Math.max(0, upCount - 1);
+                } else {
+                    // apply upvote
+                    button.classList.add('active');
+                    upCountEl.textContent = upCount + 1;
+                    // remove down if set
+                    if (downBtn.classList.contains('active')) {
+                        downBtn.classList.remove('active');
+                        downCountEl.textContent = Math.max(0, downCount - 1);
+                    }
+                }
+            } else if (voteType === 'down') {
+                if (button.classList.contains('active')) {
+                    // undo downvote
+                    button.classList.remove('active');
+                    downCountEl.textContent = Math.max(0, downCount - 1);
+                } else {
+                    // apply downvote
+                    button.classList.add('active');
+                    downCountEl.textContent = downCount + 1;
+                    // remove up if set
+                    if (upBtn.classList.contains('active')) {
+                        upBtn.classList.remove('active');
+                        upCountEl.textContent = Math.max(0, upCount - 1);
+                    }
+                }
+            }
+        }
+    } catch (err) {
+        // ignore optimistic update errors
+    }
+
     toggleVote(quoteId, voteType);
 
     // Remove focus from the button to avoid sticky accent background on touch devices
@@ -621,42 +669,6 @@ function handleVoteButtonClick(event) {
     } catch (err) {
         // ignore
     }
-}
-
-function toggleVote(quoteId, voteType) {
-    const quote = allQuotes.find((q) => q.id === quoteId);
-    if (!quote) return;
-
-    console.log(`Vote toggled on quote ${quoteId}: ${voteType}`);
-
-    if (quote.userVote === voteType) {
-        if (voteType === "up") {
-            quote.upvotes = Math.max(0, quote.upvotes - 1);
-        } else {
-            quote.downvotes = Math.max(0, quote.downvotes - 1);
-        }
-        quote.userVote = null;
-    } else {
-        if (quote.userVote === "up") {
-            quote.upvotes = Math.max(0, quote.upvotes - 1);
-        } else if (quote.userVote === "down") {
-            quote.downvotes = Math.max(0, quote.downvotes - 1);
-        }
-
-        if (voteType === "up") {
-            quote.upvotes++;
-        } else {
-            quote.downvotes++;
-        }
-        quote.userVote = voteType;
-    }
-
-    const filteredQuote = filteredQuotes.find((q) => q.id === quoteId);
-    if (filteredQuote) {
-        Object.assign(filteredQuote, quote);
-    }
-
-    renderQuotes();
 }
 
 // ============================================
