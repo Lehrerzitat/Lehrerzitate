@@ -615,6 +615,121 @@ body {
     }
 }
 
+/* Redesigned Search Panel */
+.search-panel {
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 20px;
+}
+
+.search-panel-inner {
+    background: var(--bg-white);
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+}
+
+.search-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.search-heading h2 {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+.muted {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+.search-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sort-select.compact {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+}
+
+.btn {
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-light);
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-ghost {
+    background: transparent;
+    border-color: var(--border-light);
+    color: var(--text-light);
+}
+
+.filters-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.filter-label {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.results-area {
+    margin-top: 8px;
+}
+
+.results-area .placeholder-text {
+    padding: 30px 16px;
+    text-align: center;
+    color: var(--text-light);
+}
+
+/* Ensure quotes-container inside results-area keeps spacing */
+.results-area .quotes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+@media (max-width: 900px) {
+    .search-panel { padding: 14px; }
+    .filters-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+    .filters-grid { grid-template-columns: 1fr; }
+    .search-heading { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .search-actions { width: 100%; justify-content: flex-end; }
+}
+
 /* ============================================
    SUBMIT TAB - FORM
    ============================================ */

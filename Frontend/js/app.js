@@ -217,6 +217,74 @@ function setupEventListeners() {
     if (searchResultsContainer) searchResultsContainer.addEventListener("click", handleVoteButtonClick);
     if (quoteTextInput) quoteTextInput.addEventListener("input", updateCharCount);
 
+    // On touch devices use pointerdown to make voting feel instant
+    if (quotesContainer && window.PointerEvent) {
+        quotesContainer.addEventListener('pointerdown', (e) => {
+            // Only handle touch/pen pointers
+            if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
+
+            const btn = e.target.closest('.vote-button');
+            if (!btn) return;
+
+            // Prevent native focus that some browsers apply on touch
+            try { btn.blur(); } catch (err) {}
+
+            // Mark to skip the following click (to avoid double processing)
+            btn.dataset.skipClick = '1';
+
+            // Perform optimistic vote immediately (reuse logic similar to click handler)
+            const quoteId = parseInt(btn.dataset.quoteId);
+            const voteType = btn.dataset.vote;
+
+            try {
+                const quoteEl = document.querySelector(`.quote[data-quote-id='${quoteId}']`);
+                if (quoteEl) {
+                    const upBtn = quoteEl.querySelector('.vote-button.upvote');
+                    const downBtn = quoteEl.querySelector('.vote-button.downvote');
+                    const upCountEl = upBtn.querySelector('.vote-count');
+                    const downCountEl = downBtn.querySelector('.vote-count');
+
+                    const upCount = parseInt(upCountEl.textContent || '0');
+                    const downCount = parseInt(downCountEl.textContent || '0');
+
+                    if (voteType === 'up') {
+                        if (btn.classList.contains('active')) {
+                            btn.classList.remove('active');
+                            upCountEl.textContent = Math.max(0, upCount - 1);
+                        } else {
+                            btn.classList.add('active');
+                            upCountEl.textContent = upCount + 1;
+                            if (downBtn.classList.contains('active')) {
+                                downBtn.classList.remove('active');
+                                downCountEl.textContent = Math.max(0, downCount - 1);
+                            }
+                        }
+                    } else if (voteType === 'down') {
+                        if (btn.classList.contains('active')) {
+                            btn.classList.remove('active');
+                            downCountEl.textContent = Math.max(0, downCount - 1);
+                        } else {
+                            btn.classList.add('active');
+                            downCountEl.textContent = downCount + 1;
+                            if (upBtn.classList.contains('active')) {
+                                upBtn.classList.remove('active');
+                                upCountEl.textContent = Math.max(0, upCount - 1);
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                // ignore
+            }
+
+            // Trigger the real vote logic
+            toggleVote(quoteId, voteType);
+
+            // Remove skip flag shortly after to allow future clicks
+            setTimeout(() => { try { delete btn.dataset.skipClick; } catch (e) {} }, 600);
+        }, { passive: true });
+    }
+
     // Dark Mode Toggle
     const darkModeToggle = document.getElementById("dark-mode-toggle");
     if (darkModeToggle) {
@@ -236,6 +304,28 @@ function setupEventListeners() {
             // ignore
         }
     }, {passive: true});
+
+    // Clear filters button (if present)
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const t = document.getElementById('search-teacher');
+            const s = document.getElementById('search-subject');
+            const q = document.getElementById('search-quote');
+            const sort = document.getElementById('sort-select');
+            if (t) t.value = '';
+            if (s) s.value = '';
+            if (q) q.value = '';
+            if (sort) sort.value = 'newest';
+            currentSearchTeacher = '';
+            currentSearchSubject = '';
+            currentSearchQuote = '';
+            currentSortMode = 'newest';
+            applyFiltersAndSort();
+            if (t) t.focus();
+        });
+    }
 
     // Initialize theme
     applyTheme(currentTheme);
@@ -352,6 +442,10 @@ function switchTab(tabName) {
     // Load tab-specific content
     if (tabName === "for-you") {
         renderForYouPage();
+    }
+    // When switching to search tab, ensure filters are applied and results shown
+    if (tabName === "search") {
+        applyFiltersAndSort();
     }
 
     console.log(`Switched to ${tabName} tab`);
@@ -606,6 +700,12 @@ function sortQuotes(quotes, mode) {
 function handleVoteButtonClick(event) {
     const button = event.target.closest(".vote-button");
     if (!button) return;
+
+    // If a pointerdown already handled this touch, skip the click to avoid double-toggle
+    if (button.dataset && button.dataset.skipClick) {
+        try { delete button.dataset.skipClick; } catch (e) {}
+        return;
+    }
 
     const quoteId = parseInt(button.dataset.quoteId);
     const voteType = button.dataset.vote;

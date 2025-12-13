@@ -28,7 +28,7 @@
                         <div class="logo-mark" aria-hidden="true">MTS</div>
                         <div class="brand-inner">
                             <h2 class="brand-title">MTSLehrerzitate</h2>
-                            <p class="brand-subtitle">Made by Nevio Marino</p>
+                            <p class="brand-subtitle">Die besten Sprüche — direkt aus der Community</p>
                         </div>
                     </div>
                 </div>
@@ -44,48 +44,55 @@
 
         <!-- Search Tab -->
         <div class="tab-content" id="search-tab">
-            <div class="search-container">
-                <div class="search-header">
-                    <h2>Zitate durchsuchen</h2>
-                    <p>Suche nach Lehrern oder Schlagwörtern</p>
-                </div>
-
-                <div class="search-filters">
-                    <div class="search-grid">
-                        <div class="search-box-wrapper">
-                            <i class="fas fa-user search-icon"></i>
-                            <input
-                                type="text"
-                                id="search-teacher"
-                                class="search-input"
-                                placeholder="Lehrer (z. B. Herr Müller)"
-                            />
+            <div class="search-panel">
+                <div class="search-panel-inner">
+                    <div class="search-heading">
+                        <div>
+                            <h2>Zitate durchsuchen</h2>
+                            <p class="muted">Präzise Suche nach Lehrer, Fach oder Wortlaut</p>
                         </div>
-
-                        <div class="search-box-wrapper">
-                            <i class="fas fa-book search-icon"></i>
-                            <input
-                                type="text"
-                                id="search-subject"
-                                class="search-input"
-                                placeholder="Fach (z. B. Mathematik)"
-                            />
-                        </div>
-
-                        <div class="search-box-wrapper">
-                            <i class="fas fa-quote-left search-icon"></i>
-                            <input
-                                type="text"
-                                id="search-quote"
-                                class="search-input"
-                                placeholder="Zitat (Wörter oder ganze Phrasen)"
-                            />
+                        <div class="search-actions">
+                            <label class="sort-label">
+                                <span class="muted">Sortieren</span>
+                                <select id="sort-select" class="sort-select compact">
+                                    <option value="newest">Neueste zuerst</option>
+                                    <option value="popular">Beliebte zuerst</option>
+                                    <option value="oldest">Älteste zuerst</option>
+                                </select>
+                            </label>
+                            <button id="clear-filters" class="btn btn-ghost">Filter zurücksetzen</button>
                         </div>
                     </div>
-                </div>
 
-                <div id="search-results-container" class="quotes-container">
-                    <p class="placeholder-text">Starten Sie eine Suche, um Ergebnisse anzuzeigen</p>
+                    <div class="filters-grid">
+                        <div class="filter-item">
+                            <label class="filter-label">Lehrer</label>
+                            <div class="search-box-wrapper">
+                                <i class="fas fa-user search-icon"></i>
+                                <input type="text" id="search-teacher" class="search-input" placeholder="z. B. Herr Müller">
+                            </div>
+                        </div>
+
+                        <div class="filter-item">
+                            <label class="filter-label">Fach</label>
+                            <div class="search-box-wrapper">
+                                <i class="fas fa-book search-icon"></i>
+                                <input type="text" id="search-subject" class="search-input" placeholder="z. B. Mathematik">
+                            </div>
+                        </div>
+
+                        <div class="filter-item full-width">
+                            <label class="filter-label">Zitat</label>
+                            <div class="search-box-wrapper">
+                                <i class="fas fa-quote-left search-icon"></i>
+                                <input type="text" id="search-quote" class="search-input" placeholder="Wörter oder ganze Phrasen">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="search-results-container" class="results-area">
+                        <p class="placeholder-text">Starten Sie eine Suche oder passen Sie die Filter an.</p>
+                    </div>
                 </div>
             </div>
         </div>
